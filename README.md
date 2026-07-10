@@ -14,6 +14,8 @@ npm run dev     # HMR dev build
 
 Load `dist/` via `chrome://extensions` → Developer mode → Load unpacked.
 
+**Full step-by-step browser guide:** [docs/RUNNING.md](docs/RUNNING.md).
+
 ## How it works
 
 - Header/cookie injection uses `declarativeNetRequest` dynamic rules — Chrome's
