@@ -1,0 +1,37 @@
+:root {
+  --bg: #ffffff;
+  --surface: #f5f6f8;
+  --border: #d8dbe0;
+  --text: #1f2430;
+  --text-muted: #6b7280;
+  --accent: #2563eb;
+  --danger: #dc2626;
+  --disabled: #9ca3af;
+  --radius: 6px;
+  --gap: 8px;
+  --font: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+:root[data-theme='dark'] {
+  --bg: #1b1e26;
+  --surface: #23262f;
+  --border: #363a45;
+  --text: #e6e8ee;
+  --text-muted: #9aa0ac;
+  --accent: #3b82f6;
+  --danger: #f87171;
+  --disabled: #565b66;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 380px;
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg);
+}
