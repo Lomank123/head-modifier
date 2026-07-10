@@ -100,6 +100,24 @@ type State = {
 - Rules rebuilt on every relevant storage change; when `globalEnabled` is false
   or no active profile, all dynamic rules are cleared.
 
+## Reactivity & performance notes
+
+- **Zero per-request JS.** dNR rules are applied by Chrome's native network stack;
+  no service-worker code runs per request. The worker only runs when config
+  changes. Applied rules stay active even while the (MV3) worker is torn down for
+  idle, so steady-state browsing cost is effectively nil. This is the lightest
+  mechanism MV3 offers — there is no faster alternative.
+- **Apply immediately** on checkbox toggle, add-row, delete-row, profile switch,
+  and master switch.
+- **Debounce text input** (name/value fields) ~300ms before writing to storage /
+  rebuilding rules, to avoid rebuilding on every keystroke. Still feels instant.
+- **New-requests-only semantics.** Header/cookie injection affects requests made
+  *after* a rule goes live; it cannot retroactively alter an already-sent request.
+  For an already-loaded page, reload / trigger the next request to see the effect.
+  Inherent to all header extensions, not specific to this design.
+- First edit after long idle pays a one-time ~50–150ms worker cold-start; never
+  affects already-applied rules.
+
 ## Error handling
 
 - Rule generation wrapped so a malformed row can't break the whole rule set;
