@@ -24,6 +24,6 @@ export function createDefaultState(): State {
     profiles: [profile],
     activeProfileId: profile.id,
     globalEnabled: true,
-    theme: 'light',
+    theme: 'dark',
   };
 }

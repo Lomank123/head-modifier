@@ -20,12 +20,12 @@
 
 <div class="row" class:disabled={!rule.enabled}>
   <input type="checkbox" checked={rule.enabled} on:change={toggleEnabled} title="Enable/disable" />
-  <input class="name" placeholder="name" value={rule.name} on:input={setName} />
-  <input class="value" placeholder="value" value={rule.value} on:input={setValue} />
-  <button class="target" on:click={toggleTarget} title="Toggle request/response">
+  <input class="name" placeholder="name" value={rule.name} on:input={setName} data-nav />
+  <input class="value" placeholder="value" value={rule.value} on:input={setValue} data-nav />
+  <button class="target" on:click={toggleTarget} title="Toggle request/response" tabindex="-1">
     {rule.target === 'request' ? 'req' : 'res'}
   </button>
-  <button class="del" on:click={() => onDelete(rule.id)} title="Delete">✕</button>
+  <button class="del" on:click={() => onDelete(rule.id)} title="Delete" tabindex="-1">✕</button>
 </div>
 
 <style>
@@ -35,8 +35,8 @@
     gap: 6px;
     padding: 3px 0;
   }
-  .row.disabled .name,
-  .row.disabled .value {
+  .row.disabled .name:placeholder-shown,
+  .row.disabled .value:placeholder-shown {
     color: var(--disabled);
   }
   input.name,
@@ -49,6 +49,13 @@
     background: var(--bg);
     color: var(--text);
     font-size: 12px;
+    transition: border-color 0.12s ease, box-shadow 0.12s ease;
+  }
+  input.name:focus-visible,
+  input.value:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--focus-ring);
   }
   button {
     border: 1px solid var(--border);

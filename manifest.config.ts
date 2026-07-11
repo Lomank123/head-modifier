@@ -7,6 +7,6 @@ export default defineManifest({
   description: 'Inject and modify HTTP request/response headers and cookies.',
   action: { default_popup: 'src/popup/index.html', default_title: 'HeadMod' },
   background: { service_worker: 'src/background/worker.ts', type: 'module' },
-  permissions: ['declarativeNetRequest', 'storage'],
-  host_permissions: ['<all_urls>'],
+  permissions: ['declarativeNetRequest', 'storage', 'activeTab'],
+  optional_host_permissions: ['<all_urls>'],
 });

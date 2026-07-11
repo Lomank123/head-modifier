@@ -5,6 +5,7 @@
   --text: #1f2430;
   --text-muted: #6b7280;
   --accent: #2563eb;
+  --focus-ring: rgba(37, 99, 235, 0.3);
   --danger: #dc2626;
   --disabled: #9ca3af;
   --radius: 6px;
@@ -19,6 +20,7 @@
   --text: #e6e8ee;
   --text-muted: #9aa0ac;
   --accent: #3b82f6;
+  --focus-ring: rgba(59, 130, 246, 0.4);
   --danger: #f87171;
   --disabled: #565b66;
 }
