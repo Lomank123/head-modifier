@@ -6,6 +6,13 @@ type Section = 'headers' | 'cookies';
 /** Blank starter rows shown in an empty category so users can type immediately. */
 const MIN_SLOTS = 2;
 
+/** Maximum length of a profile name. */
+export const PROFILE_NAME_MAX = 128;
+
+function clampName(name: string): string {
+  return name.trim().slice(0, PROFILE_NAME_MAX);
+}
+
 function seedSection(rows: Rule[]): Rule[] {
   if (rows.length > 0) return rows;
   return Array.from({ length: MIN_SLOTS }, () => createRule('request'));
@@ -37,7 +44,7 @@ function mapActiveProfile(state: State, fn: (p: Profile) => Profile): State {
 }
 
 export function addProfile(state: State, name: string): State {
-  const profile = createProfile(name);
+  const profile = createProfile(clampName(name));
   return {
     ...state,
     profiles: [...state.profiles, profile],
@@ -46,9 +53,10 @@ export function addProfile(state: State, name: string): State {
 }
 
 export function renameProfile(state: State, id: string, name: string): State {
+  const clamped = clampName(name);
   return {
     ...state,
-    profiles: state.profiles.map((p) => (p.id === id ? { ...p, name } : p)),
+    profiles: state.profiles.map((p) => (p.id === id ? { ...p, name: clamped } : p)),
   };
 }
 

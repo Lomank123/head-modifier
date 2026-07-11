@@ -18,7 +18,14 @@
   <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
   <div class="card" on:click|stopPropagation role="dialog" aria-label="About HeadMod">
     <div class="head">
-      <h2>HeadMod</h2>
+      <h2>
+        <svg class="title-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="16" x2="12" y2="12" />
+          <line x1="12" y1="8" x2="12.01" y2="8" />
+        </svg>
+        HeadMod
+      </h2>
       <button class="close" on:click={onClose} title="Close" tabindex="-1">✕</button>
     </div>
     <p class="tagline">An open source, lightweight &amp; free header / cookie injector.</p>
@@ -62,8 +69,15 @@
     margin-bottom: 6px;
   }
   h2 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     margin: 0;
     font-size: 15px;
+  }
+  .title-icon {
+    flex: 0 0 auto;
+    color: var(--text-muted);
   }
   .tagline {
     margin: 0 0 10px;

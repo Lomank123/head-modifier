@@ -9,16 +9,17 @@
   export let rows: Rule[];
 
   function onChange(rule: Rule, immediate: boolean) {
-    store.apply((s) => updateRow(s, section, rule), immediate);
+    store.apply((s) => updateRow(s, section, rule), immediate, true);
   }
   function onDelete(id: string) {
-    store.apply((s) => deleteRow(s, section, id), true);
+    store.apply((s) => deleteRow(s, section, id), true, true);
   }
   function add(target: RuleTarget) {
-    store.apply((s) => addRow(s, section, target), true);
+    store.apply((s) => addRow(s, section, target), true, true);
   }
 
   $: noun = section === 'cookies' ? 'cookie' : 'header';
+  $: shortcut = section === 'cookies' ? 'C' : 'H';
 
   let collapsed = false;
 </script>
@@ -52,7 +53,7 @@
       <RuleRow rule={row} {onChange} {onDelete} />
     {/each}
     <div class="actions">
-      <button on:click={() => add('request')} title="Add a request {noun}" tabindex="-1">
+      <button on:click={() => add('request')} title="Add a request {noun} (Shift+{shortcut})" tabindex="-1">
         + request {noun}
       </button>
       <button on:click={() => add('response')} title="Add a response {noun}" tabindex="-1">

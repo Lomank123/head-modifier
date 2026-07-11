@@ -1,9 +1,16 @@
 <script lang="ts">
   import { permissions, hostOf } from '../../state/permissions';
+  import { store } from '../../state/store';
+  import { setGlobalEnabled } from '../../state/operations';
 
   export let onClose: () => void;
 
   $: p = $permissions;
+
+  function toggleGlobal(e: Event) {
+    const on = (e.target as HTMLInputElement).checked;
+    store.apply((s) => setGlobalEnabled(s, on), true);
+  }
   $: currentHost = p.currentOrigin ? hostOf(p.currentOrigin) : undefined;
   $: currentAlreadyGranted = !!p.currentOrigin && p.origins.includes(p.currentOrigin);
 
@@ -31,9 +38,24 @@
   <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
   <div class="card" on:click|stopPropagation role="dialog" aria-label="Settings">
     <div class="head">
-      <h2>Settings</h2>
+      <h2>
+        <svg class="title-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
+        Settings
+      </h2>
       <button class="close" on:click={onClose} title="Close" tabindex="-1">✕</button>
     </div>
+
+    <h3>Extension</h3>
+    <label class="row toggle" title="Master on/off (Shift+Space)">
+      <span>Enable HeadMod</span>
+      <span class="switch">
+        <input type="checkbox" checked={$store.globalEnabled} on:change={toggleGlobal} />
+        <span class="slider"></span>
+      </span>
+    </label>
 
     <h3>Site access</h3>
     <p class="muted">
@@ -43,7 +65,10 @@
 
     <label class="row toggle" title="Allow HeadMod on every site">
       <span>Access on all sites</span>
-      <input type="checkbox" checked={p.allUrls} on:change={toggleAll} />
+      <span class="switch">
+        <input type="checkbox" checked={p.allUrls} on:change={toggleAll} />
+        <span class="slider"></span>
+      </span>
     </label>
 
     {#if !p.allUrls}
@@ -99,8 +124,15 @@
     margin-bottom: 6px;
   }
   h2 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     margin: 0;
     font-size: 15px;
+  }
+  .title-icon {
+    flex: 0 0 auto;
+    color: var(--text-muted);
   }
   h3 {
     margin: 12px 0 4px;
@@ -142,6 +174,46 @@
     background: var(--surface);
     font-size: 13px;
     cursor: pointer;
+  }
+  .switch {
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+  .switch input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: relative;
+    width: 34px;
+    height: 18px;
+    border-radius: 999px;
+    background: var(--border);
+    transition: background 0.15s ease, box-shadow 0.12s ease;
+  }
+  .slider::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    transition: transform 0.15s ease;
+  }
+  .switch input:checked + .slider {
+    background: var(--accent);
+  }
+  .switch input:checked + .slider::before {
+    transform: translateX(16px);
+  }
+  .switch input:focus-visible + .slider {
+    box-shadow: 0 0 0 3px var(--focus-ring);
   }
   .grant {
     margin-top: 8px;
