@@ -47,7 +47,7 @@
 
 <header>
   <div class="line">
-    <select on:change={switchProfile} value={state.activeProfileId}>
+    <select on:change={switchProfile} value={state.activeProfileId} title="Active profile">
       {#each state.profiles as p (p.id)}
         <option value={p.id}>{p.name}</option>
       {/each}
@@ -100,6 +100,14 @@
     border-radius: var(--radius);
     cursor: pointer;
     padding: 3px 6px;
+    transition: background 0.12s ease, border-color 0.12s ease;
+  }
+  button:hover {
+    background: var(--surface);
+    border-color: var(--accent);
+  }
+  button:active {
+    background: var(--border);
   }
   .master {
     display: flex;

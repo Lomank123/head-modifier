@@ -9,7 +9,13 @@ export function createRule(target: RuleTarget = 'request'): Rule {
 }
 
 export function createProfile(name: string): Profile {
-  return { id: uid(), name, urlFilter: '', headers: [], cookies: [] };
+  return {
+    id: uid(),
+    name,
+    urlFilter: '',
+    headers: [createRule(), createRule()],
+    cookies: [createRule(), createRule()],
+  };
 }
 
 export function createDefaultState(): State {

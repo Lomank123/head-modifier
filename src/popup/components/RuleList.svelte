@@ -5,6 +5,7 @@
   import RuleRow from './RuleRow.svelte';
 
   export let section: 'headers' | 'cookies';
+  export let label: string;
   export let rows: Rule[];
 
   function onChange(rule: Rule, immediate: boolean) {
@@ -20,27 +21,33 @@
   $: noun = section === 'cookies' ? 'cookie' : 'header';
 </script>
 
-<div class="list">
+<section class="list">
+  <h2>{label}</h2>
   {#each rows as row (row.id)}
     <RuleRow rule={row} {onChange} {onDelete} />
   {/each}
-  {#if rows.length === 0}
-    <p class="empty">No {section} yet.</p>
-  {/if}
   <div class="actions">
-    <button on:click={() => add('request')}>+ request {noun}</button>
-    <button on:click={() => add('response')}>+ response {noun}</button>
+    <button on:click={() => add('request')} title="Add a request {noun}">
+      + request {noun}
+    </button>
+    <button on:click={() => add('response')} title="Add a response {noun}">
+      + response {noun}
+    </button>
   </div>
-</div>
+</section>
 
 <style>
   .list {
     padding: var(--gap);
+    border-bottom: 1px solid var(--border);
   }
-  .empty {
+  h2 {
+    margin: 0 0 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     color: var(--text-muted);
-    font-size: 12px;
-    margin: 4px 0;
   }
   .actions {
     display: flex;
@@ -55,5 +62,13 @@
     cursor: pointer;
     padding: 5px 8px;
     font-size: 12px;
+    transition: background 0.12s ease, border-color 0.12s ease;
+  }
+  .actions button:hover {
+    background: var(--surface);
+    border-color: var(--accent);
+  }
+  .actions button:active {
+    background: var(--border);
   }
 </style>

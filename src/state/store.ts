@@ -1,6 +1,7 @@
 import { writable } from 'svelte/store';
 import type { State } from '../types';
 import { createDefaultState } from './defaults';
+import { ensureMinRows } from './operations';
 
 const STORAGE_KEY = 'headmod:state';
 
@@ -10,7 +11,7 @@ function createStore() {
 
   // Hydrate from storage on load.
   chrome.storage.local.get(STORAGE_KEY).then((raw) => {
-    if (raw[STORAGE_KEY]) set(raw[STORAGE_KEY] as State);
+    if (raw[STORAGE_KEY]) set(ensureMinRows(raw[STORAGE_KEY] as State));
   });
 
   function persist(state: State, immediate: boolean) {

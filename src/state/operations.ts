@@ -3,6 +3,26 @@ import { createProfile, createRule } from './defaults';
 
 type Section = 'headers' | 'cookies';
 
+/** Blank starter rows shown in an empty category so users can type immediately. */
+const MIN_SLOTS = 2;
+
+function seedSection(rows: Rule[]): Rule[] {
+  if (rows.length > 0) return rows;
+  return Array.from({ length: MIN_SLOTS }, () => createRule('request'));
+}
+
+/** Tops up any empty category with blank slots. Safe to run on hydrated state. */
+export function ensureMinRows(state: State): State {
+  return {
+    ...state,
+    profiles: state.profiles.map((p) => ({
+      ...p,
+      headers: seedSection(p.headers),
+      cookies: seedSection(p.cookies),
+    })),
+  };
+}
+
 export function getActiveProfile(state: State): Profile | undefined {
   return state.profiles.find((p) => p.id === state.activeProfileId);
 }

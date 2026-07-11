@@ -58,10 +58,19 @@
     cursor: pointer;
     padding: 3px 6px;
     font-size: 11px;
+    transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+  }
+  button.target:hover {
+    border-color: var(--accent);
+    color: var(--accent);
   }
   button.del {
     color: var(--danger);
     border-color: transparent;
     background: transparent;
+  }
+  button.del:hover {
+    background: var(--danger);
+    color: #fff;
   }
 </style>
