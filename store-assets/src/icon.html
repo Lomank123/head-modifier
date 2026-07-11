@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  html, body { margin: 0; padding: 0; background: transparent; }
+  body { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  svg { display: block; width: 100vmin; height: 100vmin; }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3b82f6" />
+      <stop offset="0.55" stop-color="#2563eb" />
+      <stop offset="1" stop-color="#1d4ed8" />
+    </linearGradient>
+    <linearGradient id="badge" x1="70" y1="60" x2="114" y2="104" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5eead4" />
+      <stop offset="1" stop-color="#06b6d4" />
+    </linearGradient>
+    <radialGradient id="sheen" cx="38" cy="30" r="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.28" />
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- app tile -->
+  <rect x="0" y="0" width="128" height="128" rx="29" fill="url(#bg)" />
+  <rect x="0" y="0" width="128" height="128" rx="29" fill="url(#sheen)" />
+
+  <!-- header rows -->
+  <rect x="26" y="39" width="54" height="13" rx="6.5" fill="#ffffff" fill-opacity="0.97" />
+  <rect x="26" y="63" width="40" height="13" rx="6.5" fill="#ffffff" fill-opacity="0.82" />
+
+  <!-- inject badge with separation ring -->
+  <circle cx="92" cy="83" r="27" fill="#1d4ed8" />
+  <circle cx="92" cy="83" r="22" fill="url(#badge)" />
+  <g stroke="#0e2a66" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M92 71 L92 93" />
+    <path d="M82 84 L92 95 L102 84" />
+  </g>
+</svg>
+</body>
+</html>
