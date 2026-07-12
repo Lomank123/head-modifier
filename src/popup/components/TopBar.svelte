@@ -241,20 +241,22 @@
     flex: 0 1 110px;
     max-width: 110px;
     min-width: 0;
-    padding: 4px;
+    padding: 4px 24px 4px 8px;
     border-radius: var(--radius);
     border: 1px solid var(--border);
-    background: var(--bg);
+    background: var(--bg) var(--select-chevron) no-repeat right 8px center;
     color: var(--text);
     cursor: pointer;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    transition: border-color 0.12s ease, background 0.12s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: border-color 0.12s ease, background-color 0.12s ease;
   }
   select:hover {
     border-color: var(--accent);
-    background: var(--surface);
+    background-color: var(--surface);
   }
   select:focus-visible {
     outline: none;
