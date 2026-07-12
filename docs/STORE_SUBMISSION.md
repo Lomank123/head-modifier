@@ -48,8 +48,10 @@ entirely user-controlled and revocable.
 
 ## Privacy policy URL
 
-Host `docs/PRIVACY.md` publicly (GitHub Pages, a gist, or any static host) and paste the
-resulting URL into the Privacy tab.
+https://gist.github.com/Lomank123/b1c1cf96d2cd00cfac9be240418f0211
+
+Public gist of `docs/PRIVACY.md`. The listing depends on this link staying reachable — if
+`docs/PRIVACY.md` changes, update the gist too.
 
 ## Store listing assets
 
