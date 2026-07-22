@@ -9,8 +9,6 @@
     { keys: ['Shift', 'H'], label: 'Add request header' },
     { keys: ['Shift', 'C'], label: 'Add request cookie' },
     { keys: ['Shift', 'P'], label: 'New profile' },
-    { keys: ['Shift', 'S'], label: 'Open settings' },
-    { keys: ['Shift', 'I'], label: 'About HeadMod' },
     { keys: ['Shift', 'Space'], label: 'Toggle on/off' },
     { keys: ['⌘', 'Z'], label: 'Undo (header/cookie)' },
     { keys: ['⌘', '⇧', 'Z'], label: 'Redo (header/cookie)' },

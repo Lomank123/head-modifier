@@ -1,6 +1,6 @@
 <script lang="ts">
   import { store } from '../state/store';
-  import { addProfile, addRow, getActiveProfile, setGlobalEnabled } from '../state/operations';
+  import { addRow, getActiveProfile, setGlobalEnabled } from '../state/operations';
   import { permissions } from '../state/permissions';
   import { arrowNav } from './actions/arrowNav';
   import TopBar from './components/TopBar.svelte';
@@ -17,6 +17,7 @@
   let showInfo = false;
   let showSettings = false;
   let showShortcuts = false;
+  let topBar: TopBar;
 
   function isEditable(el: EventTarget | null): boolean {
     const node = el as HTMLElement | null;
@@ -43,17 +44,6 @@
     if (!e.shiftKey || e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
     if (isEditable(e.target)) return;
 
-    if (e.code === 'KeyS') {
-      e.preventDefault();
-      showSettings = true;
-      return;
-    }
-    if (e.code === 'KeyI') {
-      e.preventDefault();
-      showInfo = true;
-      return;
-    }
-
     if (!granted) return;
     switch (e.code) {
       case 'KeyH':
@@ -64,12 +54,10 @@
         e.preventDefault();
         store.apply((s) => addRow(s, 'cookies', 'request'), true, true);
         break;
-      case 'KeyP': {
+      case 'KeyP':
         e.preventDefault();
-        const name = prompt('New profile name?');
-        if (name) store.apply((s) => addProfile(s, name), true);
+        topBar?.openCreateProfileModal();
         break;
-      }
       case 'Space':
         e.preventDefault();
         store.apply((s) => setGlobalEnabled(s, !s.globalEnabled), true);
@@ -82,6 +70,7 @@
 
 <main use:arrowNav>
   <TopBar
+    bind:this={topBar}
     state={$store}
     restricted={!granted}
     onOpenInfo={() => (showInfo = true)}

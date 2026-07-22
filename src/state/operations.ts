@@ -94,6 +94,13 @@ export function deleteRow(state: State, section: Section, ruleId: string): State
   }));
 }
 
+export function setSectionEnabled(state: State, section: Section, enabled: boolean): State {
+  return mapActiveProfile(state, (p) => ({
+    ...p,
+    [section]: p[section].map((r) => ({ ...r, enabled })),
+  }));
+}
+
 export function setUrlFilter(state: State, filter: string): State {
   return mapActiveProfile(state, (p) => ({ ...p, urlFilter: filter }));
 }
