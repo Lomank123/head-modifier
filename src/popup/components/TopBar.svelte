@@ -9,7 +9,10 @@
     setTheme,
     getActiveProfile,
     setUrlFilter,
+    setGlobalEnabled,
   } from '../../state/operations';
+  import ProfileDropdown from './ProfileDropdown.svelte';
+  import ProfileModal from './ProfileModal.svelte';
 
   export let state: State;
   /** When true, host access isn't granted: hide profile/filter controls. */
@@ -17,9 +20,20 @@
   export let onOpenInfo: () => void;
   export let onOpenSettings: () => void;
   export let onOpenShortcuts: () => void;
+
   $: active = getActiveProfile(state);
 
   let menuOpen = false;
+  let profileModal:
+    | { mode: 'create' }
+    | { mode: 'rename'; id: string; name: string }
+    | { mode: 'delete'; id: string; name: string }
+    | null = null;
+
+  export function openCreateProfileModal() {
+    profileModal = { mode: 'create' };
+  }
+
   function closeMenu() {
     menuOpen = false;
   }
@@ -32,23 +46,28 @@
     if (e.key === 'Escape') menuOpen = false;
   }
 
-  function switchProfile(e: Event) {
-    const id = (e.target as HTMLSelectElement).value;
+  function selectProfile(id: string) {
     store.apply((s) => setActiveProfile(s, id), true);
   }
-  function newProfile() {
-    const name = prompt('New profile name?');
-    if (name) store.apply((s) => addProfile(s, name), true);
+  function openRename(id: string) {
+    const profile = state.profiles.find((p) => p.id === id);
+    if (profile) profileModal = { mode: 'rename', id, name: profile.name };
   }
-  function rename() {
-    if (!active) return;
-    const name = prompt('Rename profile', active.name);
-    if (name) store.apply((s) => renameProfile(s, active!.id, name), true);
+  function openDelete(id: string) {
+    const profile = state.profiles.find((p) => p.id === id);
+    if (profile) profileModal = { mode: 'delete', id, name: profile.name };
   }
-  function remove() {
-    if (active && confirm(`Delete profile "${active.name}"?`)) {
-      store.apply((s) => deleteProfile(s, active!.id), true);
+  function onProfileModalConfirm(name?: string) {
+    if (!profileModal) return;
+    const modal = profileModal;
+    if (modal.mode === 'create' && name) {
+      store.apply((s) => addProfile(s, name), true);
+    } else if (modal.mode === 'rename' && name) {
+      store.apply((s) => renameProfile(s, modal.id, name), true);
+    } else if (modal.mode === 'delete') {
+      store.apply((s) => deleteProfile(s, modal.id), true);
     }
+    profileModal = null;
   }
   function toggleTheme() {
     store.apply((s) => setTheme(s, s.theme === 'dark' ? 'light' : 'dark'), true);
@@ -56,6 +75,9 @@
   function onFilter(e: Event) {
     const value = (e.target as HTMLInputElement).value;
     store.apply((s) => setUrlFilter(s, value), false);
+  }
+  function toggleGlobal() {
+    store.apply((s) => setGlobalEnabled(s, !s.globalEnabled), true);
   }
 </script>
 
@@ -66,12 +88,20 @@
     {#if restricted}
       <span class="brand">HeadMod</span>
     {:else}
-      <select on:change={switchProfile} value={state.activeProfileId} title="Active profile">
-        {#each state.profiles as p (p.id)}
-          <option value={p.id}>{p.name}</option>
-        {/each}
-      </select>
-      <button class="icon" on:click={newProfile} title="Create profile (Shift+P)" tabindex="-1" aria-label="Create profile">
+      <ProfileDropdown
+        profiles={state.profiles}
+        activeProfileId={state.activeProfileId}
+        onSelect={selectProfile}
+        onEdit={openRename}
+        onDelete={openDelete}
+      />
+      <button
+        class="icon"
+        on:click={openCreateProfileModal}
+        title="Create profile (Shift+P)"
+        tabindex="-1"
+        aria-label="Create profile"
+      >
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="12" y1="5" x2="12" y2="19" />
           <line x1="5" y1="12" x2="19" y2="12" />
@@ -80,6 +110,18 @@
     {/if}
 
     <span class="spacer"></span>
+
+    <button
+      class="power"
+      class:off={!state.globalEnabled}
+      on:click={toggleGlobal}
+      title="Toggle HeadMod (Shift+Space)"
+      tabindex="-1"
+      aria-label={state.globalEnabled ? 'Turn HeadMod off' : 'Turn HeadMod on'}
+    >
+      <span class="dot" aria-hidden="true"></span>
+      <span>{state.globalEnabled ? 'On' : 'Off'}</span>
+    </button>
 
     {#if !restricted}
       <span class="divider" aria-hidden="true"></span>
@@ -134,31 +176,12 @@
         <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
         <div class="backdrop" on:click={closeMenu} role="presentation"></div>
         <div class="menu" role="menu">
-          {#if !restricted}
-            <button class="item" role="menuitem" on:click={() => run(rename)}>
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-              </svg>
-              <span>Rename profile</span>
-            </button>
-            <button class="item danger" role="menuitem" on:click={() => run(remove)}>
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                <line x1="10" y1="11" x2="10" y2="17" />
-                <line x1="14" y1="11" x2="14" y2="17" />
-              </svg>
-              <span>Delete profile</span>
-            </button>
-            <div class="divider-h" role="separator"></div>
-          {/if}
           <button class="item" role="menuitem" on:click={() => run(onOpenSettings)}>
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3" />
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
             </svg>
             <span>Settings</span>
-            <span class="hint">⇧S</span>
           </button>
           <button class="item" role="menuitem" on:click={() => run(onOpenInfo)}>
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -167,7 +190,6 @@
               <line x1="12" y1="8" x2="12.01" y2="8" />
             </svg>
             <span>About HeadMod</span>
-            <span class="hint">⇧I</span>
           </button>
           <button class="item" role="menuitem" on:click={() => run(onOpenShortcuts)}>
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -212,6 +234,15 @@
   {/if}
 </header>
 
+{#if profileModal}
+  <ProfileModal
+    mode={profileModal.mode}
+    profileName={'name' in profileModal ? profileModal.name : ''}
+    onConfirm={onProfileModalConfirm}
+    onClose={() => (profileModal = null)}
+  />
+{/if}
+
 <style>
   header {
     padding: var(--gap);
@@ -236,32 +267,6 @@
     height: 18px;
     margin: 0 2px;
     background: var(--border);
-  }
-  select {
-    flex: 0 1 110px;
-    max-width: 110px;
-    min-width: 0;
-    padding: 4px 24px 4px 8px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: var(--bg) var(--select-chevron) no-repeat right 8px center;
-    color: var(--text);
-    cursor: pointer;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    appearance: none;
-    -webkit-appearance: none;
-    transition: border-color 0.12s ease, background-color 0.12s ease;
-  }
-  select:hover {
-    border-color: var(--accent);
-    background-color: var(--surface);
-  }
-  select:focus-visible {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--focus-ring);
   }
   button {
     display: inline-flex;
@@ -299,6 +304,29 @@
   button.icon.active {
     background: var(--surface);
     border-color: var(--accent);
+  }
+  button.power {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 26px;
+    padding: 0 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  button.power .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--on);
+    box-shadow: 0 0 0 2px var(--on-soft);
+  }
+  button.power.off .dot {
+    background: var(--text-muted);
+    box-shadow: none;
+  }
+  button.power:hover {
+    color: var(--text);
   }
 
   .menu-wrap {
@@ -343,24 +371,6 @@
   .item svg {
     flex: 0 0 auto;
     color: var(--text-muted);
-  }
-  .item .hint {
-    margin-left: auto;
-    color: var(--text-muted);
-    font-size: 11px;
-  }
-  .item.danger {
-    color: var(--danger);
-  }
-  .item.danger svg {
-    color: var(--danger);
-  }
-  .item.danger:hover {
-    background: var(--danger);
-    color: #fff;
-  }
-  .item.danger:hover svg {
-    color: #fff;
   }
   .divider-h {
     height: 1px;
