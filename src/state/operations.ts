@@ -18,10 +18,14 @@ function seedSection(rows: Rule[]): Rule[] {
   return Array.from({ length: MIN_SLOTS }, () => createRule('request'));
 }
 
+const DEFAULT_SECTION_COLLAPSED = { headers: false, cookies: false };
+
 /** Tops up any empty category with blank slots. Safe to run on hydrated state. */
 export function ensureMinRows(state: State): State {
   return {
     ...state,
+    sectionCollapsed: state.sectionCollapsed ?? DEFAULT_SECTION_COLLAPSED,
+    urlFilterVisible: state.urlFilterVisible ?? false,
     profiles: state.profiles.map((p) => ({
       ...p,
       headers: seedSection(p.headers),
@@ -111,4 +115,17 @@ export function setGlobalEnabled(state: State, enabled: boolean): State {
 
 export function setTheme(state: State, theme: Theme): State {
   return { ...state, theme };
+}
+
+export function setSectionCollapsed(state: State, section: Section, collapsed: boolean): State {
+  if (state.sectionCollapsed[section] === collapsed) return state;
+  return {
+    ...state,
+    sectionCollapsed: { ...state.sectionCollapsed, [section]: collapsed },
+  };
+}
+
+export function setUrlFilterVisible(state: State, visible: boolean): State {
+  if (state.urlFilterVisible === visible) return state;
+  return { ...state, urlFilterVisible: visible };
 }

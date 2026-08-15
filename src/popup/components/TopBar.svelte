@@ -10,6 +10,7 @@
     getActiveProfile,
     setUrlFilter,
     setGlobalEnabled,
+    setUrlFilterVisible,
   } from '../../state/operations';
   import ProfileDropdown from './ProfileDropdown.svelte';
   import ProfileModal from './ProfileModal.svelte';
@@ -20,6 +21,8 @@
   export let onOpenInfo: () => void;
   export let onOpenSettings: () => void;
   export let onOpenShortcuts: () => void;
+  export let onOpenChangelog: () => void;
+  export let profileModalOpen = false;
 
   $: active = getActiveProfile(state);
 
@@ -29,6 +32,8 @@
     | { mode: 'rename'; id: string; name: string }
     | { mode: 'delete'; id: string; name: string }
     | null = null;
+
+  $: profileModalOpen = profileModal !== null;
 
   export function openCreateProfileModal() {
     profileModal = { mode: 'create' };
@@ -79,6 +84,9 @@
   function toggleGlobal() {
     store.apply((s) => setGlobalEnabled(s, !s.globalEnabled), true);
   }
+  function toggleUrlFilter() {
+    store.apply((s) => setUrlFilterVisible(s, !s.urlFilterVisible), true);
+  }
 </script>
 
 <svelte:window on:keydown={onKey} />
@@ -105,6 +113,17 @@
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="12" y1="5" x2="12" y2="19" />
           <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+      </button>
+      <button
+        class="icon"
+        on:click={toggleUrlFilter}
+        title={state.urlFilterVisible ? 'Hide URL filter' : 'Show URL filter'}
+        tabindex="-1"
+        aria-label={state.urlFilterVisible ? 'Hide URL filter' : 'Show URL filter'}
+      >
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
         </svg>
       </button>
     {/if}
@@ -197,6 +216,16 @@
             </svg>
             <span>Keyboard shortcuts</span>
           </button>
+          <button class="item" role="menuitem" on:click={() => run(onOpenChangelog)}>
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+              <polyline points="10 9 9 9 8 9" />
+            </svg>
+            <span>Changelog</span>
+          </button>
           <div class="divider-h" role="separator"></div>
           <button class="item" role="menuitem" on:click={() => run(toggleTheme)}>
             {#if state.theme === 'dark'}
@@ -223,7 +252,7 @@
       {/if}
     </div>
   </div>
-  {#if !restricted}
+  {#if !restricted && state.urlFilterVisible}
     <input
       class="filter"
       placeholder="URL filter (blank = all URLs)"

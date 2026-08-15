@@ -18,9 +18,16 @@ export interface Profile {
 
 export type Theme = 'light' | 'dark';
 
+export interface SectionCollapsed {
+  headers: boolean;
+  cookies: boolean;
+}
+
 export interface State {
   profiles: Profile[];
   activeProfileId: string;
   globalEnabled: boolean;
   theme: Theme;
+  sectionCollapsed: SectionCollapsed;
+  urlFilterVisible: boolean;
 }

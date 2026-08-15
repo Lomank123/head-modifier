@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Rule, RuleTarget } from '../../types';
   import { store } from '../../state/store';
-  import { addRow, updateRow, deleteRow, setSectionEnabled } from '../../state/operations';
+  import { addRow, updateRow, deleteRow, setSectionEnabled, setSectionCollapsed } from '../../state/operations';
   import RuleRow from './RuleRow.svelte';
 
   export let section: 'headers' | 'cookies';
@@ -27,7 +27,12 @@
   $: allEnabled = rows.length > 0 && rows.every((r) => r.enabled);
   $: someEnabled = rows.some((r) => r.enabled);
 
-  let collapsed = false;
+  $: collapsed = $store.sectionCollapsed[section];
+
+  function toggleCollapsed() {
+    store.apply((s) => setSectionCollapsed(s, section, !s.sectionCollapsed[section]), true);
+  }
+
   let toggleAllEl: HTMLInputElement;
 
   $: if (toggleAllEl) {
@@ -35,7 +40,7 @@
   }
 </script>
 
-<section class="list">
+<section class="list" class:collapsed={collapsed}>
   <div class="header-row">
     <input
       bind:this={toggleAllEl}
@@ -48,7 +53,7 @@
     <button
       class="header"
       class:collapsed
-      on:click={() => (collapsed = !collapsed)}
+      on:click={toggleCollapsed}
       title={collapsed ? `Expand ${label}` : `Collapse ${label}`}
       aria-expanded={!collapsed}
       tabindex="-1"
@@ -66,7 +71,7 @@
       >
         <polyline points="6 9 12 15 18 9" />
       </svg>
-      <span>{label}</span>
+      <span>{label} ({rows.length})</span>
     </button>
   </div>
   {#if !collapsed}
@@ -86,14 +91,18 @@
 
 <style>
   .list {
-    padding: var(--gap);
+    padding: 7px var(--gap);
     border-bottom: 1px solid var(--border);
   }
   .header-row {
     display: flex;
     align-items: center;
     gap: 6px;
+    min-height: 28px;
     margin-bottom: 6px;
+  }
+  .list.collapsed .header-row {
+    margin-bottom: 0;
   }
   .header {
     display: flex;
@@ -101,12 +110,15 @@
     gap: 6px;
     flex: 1;
     min-width: 0;
+    align-self: stretch;
+    min-height: 28px;
     margin: 0;
-    padding: 4px 6px;
+    padding: 0 8px;
     border: none;
     border-radius: var(--radius);
     background: transparent;
     cursor: pointer;
+    font-family: var(--font);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.04em;
@@ -114,12 +126,20 @@
     color: var(--text-muted);
     transition: background 0.12s ease, color 0.12s ease;
   }
+  .header span {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+  }
   .header:hover {
     background: var(--surface);
     color: var(--text);
   }
   .chevron {
     flex: 0 0 auto;
+    display: block;
+    width: 14px;
+    height: 14px;
     transition: transform 0.15s ease;
   }
   .header.collapsed .chevron {

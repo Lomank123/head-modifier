@@ -25,5 +25,7 @@ export function createDefaultState(): State {
     activeProfileId: profile.id,
     globalEnabled: true,
     theme: 'dark',
+    sectionCollapsed: { headers: false, cookies: false },
+    urlFilterVisible: false,
   };
 }

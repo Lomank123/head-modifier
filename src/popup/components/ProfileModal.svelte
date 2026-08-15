@@ -80,6 +80,7 @@
   .overlay {
     position: fixed;
     inset: 0;
+    padding: 16px 0;
     background: rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;

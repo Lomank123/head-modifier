@@ -1,7 +1,10 @@
 <script lang="ts">
+  import { onDestroy, onMount } from 'svelte';
   import { store } from '../state/store';
   import { addRow, getActiveProfile, setGlobalEnabled } from '../state/operations';
   import { permissions } from '../state/permissions';
+  import { shouldShowWhatsNew, markVersionSeen } from '../state/changelogSeen';
+  import { setOverlaySize, type OverlaySize } from './popupLayout';
   import { arrowNav } from './actions/arrowNav';
   import TopBar from './components/TopBar.svelte';
   import RuleList from './components/RuleList.svelte';
@@ -9,6 +12,7 @@
   import InfoPanel from './components/InfoPanel.svelte';
   import SettingsPanel from './components/SettingsPanel.svelte';
   import ShortcutsPanel from './components/ShortcutsPanel.svelte';
+  import ChangelogPanel from './components/ChangelogPanel.svelte';
 
   $: document.documentElement.setAttribute('data-theme', $store.theme);
   $: profile = getActiveProfile($store);
@@ -17,7 +21,39 @@
   let showInfo = false;
   let showSettings = false;
   let showShortcuts = false;
+  let showChangelog = false;
+  let showWhatsNew = false;
+  let profileModalOpen = false;
   let topBar: TopBar;
+
+  $: overlayOpen =
+    showInfo ||
+    showSettings ||
+    showShortcuts ||
+    showChangelog ||
+    showWhatsNew ||
+    profileModalOpen;
+
+  $: overlaySize = !overlayOpen
+    ? null
+    : showChangelog || showWhatsNew
+      ? ('scrollable' as OverlaySize)
+      : ('compact' as OverlaySize);
+
+  $: setOverlaySize(overlaySize);
+
+  onDestroy(() => setOverlaySize(null));
+
+  onMount(() => {
+    void shouldShowWhatsNew().then((show) => {
+      if (show) showWhatsNew = true;
+    });
+  });
+
+  function dismissWhatsNew() {
+    showWhatsNew = false;
+    void markVersionSeen();
+  }
 
   function isEditable(el: EventTarget | null): boolean {
     const node = el as HTMLElement | null;
@@ -71,11 +107,13 @@
 <main use:arrowNav>
   <TopBar
     bind:this={topBar}
+    bind:profileModalOpen
     state={$store}
     restricted={!granted}
     onOpenInfo={() => (showInfo = true)}
     onOpenSettings={() => (showSettings = true)}
     onOpenShortcuts={() => (showShortcuts = true)}
+    onOpenChangelog={() => (showChangelog = true)}
   />
 
   {#if granted && profile}
@@ -96,6 +134,12 @@
 {/if}
 {#if showShortcuts}
   <ShortcutsPanel onClose={() => (showShortcuts = false)} />
+{/if}
+{#if showChangelog}
+  <ChangelogPanel mode="full" onClose={() => (showChangelog = false)} />
+{/if}
+{#if showWhatsNew}
+  <ChangelogPanel mode="update" onClose={dismissWhatsNew} />
 {/if}
 
 <style>
