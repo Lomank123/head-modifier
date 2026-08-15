@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "package:store": "bash scripts/package-store.sh"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.28",

@@ -25,18 +25,18 @@ changes, update the gist to match.
 ## 2. Build the package
 
 ```sh
-npm run build
-cd dist && zip -qr ../headmod-1.0.0.zip . -x '.*' '__MACOSX*' && cd ..
+npm run package:store
 ```
 
-Zip the **contents** of `dist/`, not the folder. `manifest.json` must be at the zip root.
-Verify with `unzip -l headmod-1.0.0.zip` — the first-level entries should be
+This builds `dist/` and writes `headmod-<version>.zip` at the repo root (version from
+`package.json`). Zip the **contents** of `dist/`, not the folder. `manifest.json` must be at the zip root.
+Verify with `unzip -l headmod-1.2.0.zip` — the first-level entries should be
 `manifest.json`, `icon-*.png`, `assets/`, `src/`, `service-worker-loader.js`.
 
 ## 3. Upload
 
 [Developer Dashboard](https://chrome.google.com/webstore/devconsole) → **Add new item** →
-upload `headmod-1.0.0.zip`.
+upload `headmod-1.2.0.zip`.
 
 ## 4. Fill the tabs
 
