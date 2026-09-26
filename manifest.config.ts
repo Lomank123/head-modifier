@@ -2,9 +2,10 @@ import { defineManifest } from '@crxjs/vite-plugin';
 
 export default defineManifest({
   manifest_version: 3,
-  name: 'HeadMod',
+  name: 'HeadMod – HTTP Header & Cookie Editor',
   version: '1.2.1',
-  description: 'Inject and modify HTTP request/response headers and cookies.',
+  description:
+    'Add, change, or remove HTTP request and response headers and cookies on sites you choose. Free, local, no tracking.',
   icons: {
     16: 'icon-16.png',
     32: 'icon-32.png',
