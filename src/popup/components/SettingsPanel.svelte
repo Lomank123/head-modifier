@@ -259,7 +259,7 @@
     word-break: break-all;
   }
   .revoke {
-    border: none;
+    border: 1px solid transparent;
     background: transparent;
     color: var(--danger);
     cursor: pointer;
@@ -268,7 +268,8 @@
     border-radius: var(--radius);
   }
   .revoke:hover {
-    background: var(--danger);
-    color: #fff;
+    background: transparent;
+    border-color: var(--danger);
+    color: var(--danger);
   }
 </style>

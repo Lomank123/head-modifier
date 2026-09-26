@@ -137,7 +137,8 @@
     background: transparent;
   }
   button.del:hover {
-    background: var(--danger);
-    color: #fff;
+    background: transparent;
+    border-color: var(--danger);
+    color: var(--danger);
   }
 </style>

@@ -3,7 +3,7 @@ import { defineManifest } from '@crxjs/vite-plugin';
 export default defineManifest({
   manifest_version: 3,
   name: 'HeadMod',
-  version: '1.2.0',
+  version: '1.2.1',
   description: 'Inject and modify HTTP request/response headers and cookies.',
   icons: {
     16: 'icon-16.png',

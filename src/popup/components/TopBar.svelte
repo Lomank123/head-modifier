@@ -35,6 +35,8 @@
 
   $: profileModalOpen = profileModal !== null;
 
+  const brandIconUrl = chrome.runtime.getURL('icon-16.png');
+
   export function openCreateProfileModal() {
     profileModal = { mode: 'create' };
   }
@@ -94,7 +96,10 @@
 <header>
   <div class="line">
     {#if restricted}
-      <span class="brand">HeadMod</span>
+      <span class="brand">
+        <img class="brand-icon" src={brandIconUrl} alt="" width="16" height="16" />
+        HeadMod
+      </span>
     {:else}
       <ProfileDropdown
         profiles={state.profiles}
@@ -287,8 +292,15 @@
     flex: 1;
   }
   .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-weight: 600;
     font-size: 13px;
+  }
+  .brand-icon {
+    flex: 0 0 auto;
+    border-radius: 4px;
   }
   .divider {
     flex: 0 0 auto;

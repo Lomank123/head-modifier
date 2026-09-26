@@ -5,6 +5,13 @@ export type ChangelogEntry = {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '1.2.1',
+    items: [
+      'Updated extension icons',
+      'Delete (✕) hover uses an outline on a transparent background; icon color stays the same',
+    ],
+  },
+  {
     version: '1.2.0',
     items: [
       'Add changelog',
