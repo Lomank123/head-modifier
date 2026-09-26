@@ -9,19 +9,12 @@ while the extension never references it. Only the icons the manifest declares be
 
 | File | Used for |
 | --- | --- |
-| `screenshot-1280x800.png` | Store listing screenshot (required; 1280×800) |
-| `promo-440x280.png` | Small promo tile (optional) |
+| `screenshot-1-1280x800.png` … `screenshot-5-1280x800.png` | Store listing screenshots (upload in numeric order; at least one required) |
+| `promo-440x280.jpg` | Small promo tile (optional; RGB, no alpha) |
+| `promo-marquee-1400x560.jpg` | Marquee promo tile (optional; RGB, no alpha) |
 | `icon-512.png` | High-res master, kept as a source |
 
 The 128×128 store-listing icon is uploaded from `public/icon-128.png`.
 
-## src/
-
-Generators, so the artwork can be rebuilt rather than hand-edited. Render in a browser and
-capture the output:
-
-- `icon.html` — the icon
-- `promo.html` — the promo tile
-
-To refresh the store screenshot, capture the real popup and frame it at 1280×800. Capture
-from the actual extension, never from a mock — a mock drifts out of sync with the real UI.
+To refresh screenshots, capture the real popup at 1280×800 from the loaded extension — not
+from a mock.

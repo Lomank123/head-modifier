@@ -112,9 +112,9 @@ Uploaded to the dashboard only — these are **not** part of the extension packa
 | Asset | File | Notes |
 | --- | --- | --- |
 | Store icon (128×128) | `public/icon-128.png` | Required |
-| Screenshot (1280×800) | `store-assets/screenshot-1280x800.png` | Required (at least one, up to 5) |
-| Small promo tile (440×280) | `store-assets/promo-440x280.png` | Optional — RGB, no alpha |
-| Marquee promo tile (1400×560) | — | Optional, not produced |
+| Screenshots (1280×800) | `store-assets/screenshot-1-1280x800.png` … `screenshot-5-1280x800.png` | Required (at least one, up to 5) |
+| Small promo tile (440×280) | `store-assets/promo-440x280.jpg` | Optional — RGB, no alpha |
+| Marquee promo tile (1400×560) | `store-assets/promo-marquee-1400x560.jpg` | Optional — RGB, no alpha |
 
 ## Additional fields (Store listing)
 

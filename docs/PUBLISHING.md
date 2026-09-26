@@ -47,8 +47,9 @@ upload `headmod-1.2.0.zip`.
 | Description | See `docs/STORE_SUBMISSION.md` |
 | Category | Developer Tools |
 | Icon (128×128) | `public/icon-128.png` |
-| Screenshot (1280×800) | `store-assets/screenshot-1280x800.png` |
-| Small promo tile (440×280) | `store-assets/promo-440x280.png` (optional) |
+| Screenshots (1280×800) | `store-assets/screenshot-1-1280x800.png` … `screenshot-5-1280x800.png` |
+| Small promo tile (440×280) | `store-assets/promo-440x280.jpg` (optional) |
+| Marquee promo (1400×560) | `store-assets/promo-marquee-1400x560.jpg` (optional) |
 
 ### Privacy
 
